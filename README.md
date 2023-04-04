@@ -1,2 +1,5 @@
-# Pattern-Recognition
- Repository to store the labs and assignments from Cal Poly SLO EE 516 - Pattern Recognition
+Project decscriptions are in their respective folders. Descriptions originate from professor provided descriptions on canvas.
+
+Project Summaries:
+
+Project 1:
