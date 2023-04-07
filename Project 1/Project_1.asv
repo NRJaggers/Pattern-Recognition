@@ -76,7 +76,7 @@ hold off
 %%
 figure;
 hold on
-num = 5;
+num = 6;
 histogram(featarry_0(:,num));
 histogram(featarry_1(:,num));
 histogram(featarry_2(:,num));
@@ -85,23 +85,5 @@ legend("0 test","1 test","2 test");
 hold off
 
 %%
-% Create scatter plot 0 and 1
-figure;
-hold on;
-first = 6;
-second = 7;
-scatter(featarry_0(:,first),featarry_0(:,second));
-scatter(featarry_1(:,first),featarry_1(:,second));
-legend("0","1");
-hold off
-
-%%
-% Create scatter plot 0 and 2
-figure;
-hold on;
-first = 2;
-second = 6;
-scatter(featarry_0(:,first),featarry_0(:,second));
-scatter(featarry_2(:,first),featarry_2(:,second));
-legend("0","2");
-hold off
+% Create scatter plot
+scatter(featarry_0(:,1));
