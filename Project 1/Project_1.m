@@ -76,7 +76,7 @@ hold off
 %%
 figure;
 hold on
-num = 9;
+num = 5;
 histogram(featarry_0(:,num));
 histogram(featarry_1(:,num));
 histogram(featarry_2(:,num));
@@ -84,3 +84,6 @@ title("Comparing Test");
 legend("0 test","1 test","2 test");
 hold off
 
+%%
+% Create scatter plot
+scatter(featarry_0(:,1));
