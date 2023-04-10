@@ -18,22 +18,14 @@ im1 = imread("mnist_train1.jpg");
 im2 = imread("mnist_train2.jpg");
 
 %%
-%get histogram of data and determine threshold to create binary image
-figure(1);
-histogram(im0);
-figure(2);
-histogram(im1);
-figure(3);
-histogram(im2);
-
-%%
 %create binary image and show results
-binary_im0 = im0 > 50;
+binary_im0 = imbinarize(im0);
 %%imshow(binary_im0);
-binary_im1 = im1 > 50;
-%%imshow(binary_im0);
-binary_im2 = im2 > 50;
-%%imshow(binary_im0);
+binary_im1 = imbinarize(im1);
+%%imshow(binary_im1);
+binary_im2 = imbinarize(im2);
+%%imshow(binary_im2);
+
 %%
 features_0 = get_features(binary_im0);
 features_1 = get_features(binary_im1);
