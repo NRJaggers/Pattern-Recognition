@@ -6,7 +6,7 @@
 % Group 7: Nathan Jaggers, Ronit Singh
 %
 % Description: See coresponding document <Can add description later>
-%% Part <#>
+%% Part A
 close all;
 clear;
 clc;
@@ -68,7 +68,27 @@ hold off
 %%
 figure;
 hold on
-num = 5;
+num = 6;
+histogram(featarry_0(:,num));
+histogram(featarry_1(:,num));
+histogram(featarry_2(:,num));
+title("Comparing FilledArea");
+legend("0 FilledArea","1 FilledArea","2 FilledArea");
+hold off
+
+figure;
+hold on
+num = 7;
+histogram(featarry_0(:,num));
+histogram(featarry_1(:,num));
+histogram(featarry_2(:,num));
+title("Comparing MinorAxisLength");
+legend("0 MAL","1 MAL","2 MAL");
+hold off
+%%
+figure;
+hold on
+num = 4;
 histogram(featarry_0(:,num));
 histogram(featarry_1(:,num));
 histogram(featarry_2(:,num));
