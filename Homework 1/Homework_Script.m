@@ -27,7 +27,7 @@ ylim([-0.5 1.5]);
 hold off;
 %%
 %create augmented matrix and initialize weight vector
-Y = [1 class1(1,:); 1 class1(2,:); -1 class2(1,:); -1 class2(2,:)];
+Y = [1 class1(1,:); 1 class1(2,:); -1 -1*class2(1,:); -1 -1*class2(2,:)];
 %weight vector should be a column vector with same amount of rows as the Y
 %matrix has columns
 a = zeros(size(Y,2),1);
@@ -63,8 +63,8 @@ xlim([-0.5 1.5]);
 ylim([-0.5 1.5]);
 
 %create boundry line and plot results
-x1 = linspace(-2,2);
-x2 = (a(1) + a(2)*x1)/(-1*a(3));
+x2 = linspace(-2,2);
+x1 = zeros(1,numel(x2)) + 2/3;
 plot(x1,x2);
 hold off;
 
@@ -90,7 +90,7 @@ ylim([-1.5 1.5]);
 
 %create boundry line and plot results
 x2 = linspace(-2,2);
-x1 = zeros(1,numel(x2)) - 0.5;
+x1 = zeros(1,numel(x2)) + 0.5;
 plot(x1,x2);
 hold off;
 
@@ -108,4 +108,16 @@ for k = 1: 1000
     end
 end
 
+%recreate scatter plot
+hold on;
+scatter(class1(1,:),class1(2,:),"bx");
+scatter(class2(1,:),class2(2,:),"ro");
+xlim([-1.5 1.5]);
+ylim([-1.5 1.5]);
+
+%create boundry line and plot results
+x2 = linspace(-2,2);
+x1 = zeros(1,numel(x2)) + 0.5;
+plot(x1,x2);
+hold off;
 
