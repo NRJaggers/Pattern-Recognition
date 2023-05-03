@@ -100,7 +100,7 @@ hold off
 % Create scatter plot 0 and 1
 figure;
 hold on;
-first = 6;
+first = 3;
 second = 7;
 scatter(featarry_0(:,first),featarry_0(:,second));
 scatter(featarry_1(:,first),featarry_1(:,second));
