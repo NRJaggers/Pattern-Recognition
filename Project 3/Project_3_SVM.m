@@ -81,7 +81,8 @@ legend("0","1");
 hold off
 %%
 hold on
-gscatter(features(:,1),features(:,2),classification)
+color = [0.8500 0.3250 0.0980 ; 0 0.4470 0.7410 ];
+gscatter(features(:,1),features(:,2),classification, color)
 plot(sv(:,1),sv(:,2),'ko','MarkerSize',10)
 
 %%
@@ -95,11 +96,11 @@ X1margin_low = X1+beta(1)*m^2;
 X2margin_low = X2+beta(2)*m^2;
 X1margin_high = X1-beta(1)*m^2;
 X2margin_high = X2-beta(2)*m^2;
-plot(X1margin_high,X2margin_high,'b--')
-plot(X1margin_low,X2margin_low,'r--')
+plot(X1margin_low,X2margin_low,'b--')
+plot(X1margin_high,X2margin_high,'r--')
 xlabel('feature 1')
 ylabel('feature 2')
-legend('0','1','Support Vector', ...
+legend('1','0','Support Vector', ...
     'Boundary Line','Upper Margin','Lower Margin')
 hold off
 
@@ -150,6 +151,71 @@ hold off
 
 %%
 hold on
+color = [0.8500 0.3250 0.0980 ; 0 0.4470 0.7410 ];
+gscatter(test_features(:,1),test_features(:,2),test_classification,color)
+%plot(sv(:,1),sv(:,2),'ko','MarkerSize',10)
+
+%X1 = linspace(min(features(:,1)),max(features(:,1)),100);
+X1 = linspace(-1,2,100); %jank to make margins extend whole plot in next section
+X2 = -(beta(1)/beta(2)*X1)-b/beta(2);
+plot(X1,X2,'-')
+m = 1/sqrt(beta(1)^2 + beta(2)^2);  % Margin half-width
+X1margin_low = X1+beta(1)*m^2;
+X2margin_low = X2+beta(2)*m^2;
+X1margin_high = X1-beta(1)*m^2;
+X2margin_high = X2-beta(2)*m^2;
+plot(X1margin_low,X2margin_low,'b--')
+plot(X1margin_high,X2margin_high,'r--')
+xlabel('feature 1')
+ylabel('feature 2')
+legend('0','1', ...
+    'Boundary Line','Upper Margin','Lower Margin')
+hold off
+
+%%
+% classify test data
+[label,score] = predict(SVMModel,test_features);
+
+%find how many samples are misclassified
+miss_samples = find(test_classification ~= label);
+miss_count = length(miss_samples);
+
+classification_error = (miss_count/length(label))*100;
+
+%% Train a linear kernel SVM classifier - 2
+SVMModel = fitcsvm(features,classification, "KernelFunction", "rbf", "BoxConstraint", 10); 
+%default for two class classifier is linear kernel, for one class
+%classifier it is gaussian (rbf - radial basis function) kernel
+
+%using mathworks example to create plot 
+sv = SVMModel.SupportVectors; % Support vectors
+beta = SVMModel.Beta; % Linear predictor coefficients
+b = SVMModel.Bias; % Bias term
+
+%%
+hold on
+gscatter(features(:,1),features(:,2),classification)
+plot(sv(:,1),sv(:,2),'ko','MarkerSize',10)
+
+%X1 = linspace(min(features(:,1)),max(features(:,1)),100);
+X1 = linspace(-1,2,100); %jank to make margins extend whole plot in next section
+X2 = -(beta(1)/beta(2)*X1)-b/beta(2);
+plot(X1,X2,'-')
+m = 1/sqrt(beta(1)^2 + beta(2)^2);  % Margin half-width
+X1margin_low = X1+beta(1)*m^2;
+X2margin_low = X2+beta(2)*m^2;
+X1margin_high = X1-beta(1)*m^2;
+X2margin_high = X2-beta(2)*m^2;
+plot(X1margin_high,X2margin_high,'b--')
+plot(X1margin_low,X2margin_low,'r--')
+xlabel('feature 1')
+ylabel('feature 2')
+legend('0','1','Support Vector', ...
+    'Boundary Line','Upper Margin','Lower Margin')
+hold off
+
+%%
+hold on
 gscatter(test_features(:,1),test_features(:,2),test_classification)
 %plot(sv(:,1),sv(:,2),'ko','MarkerSize',10)
 
@@ -179,3 +245,4 @@ miss_samples = find(test_classification ~= label);
 miss_count = length(miss_samples);
 
 %%
+
