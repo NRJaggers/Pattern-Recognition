@@ -42,6 +42,12 @@ featarry_train2 = make_feat_array(features_train2);
 %Y is augmented matrix holding (+/-)1's and two values to describe digit 
 %in each row 
 
+%0 & 1
+class_1 = [ones(length(featarry_train0(:,3)),1) featarry_train0(:,3) featarry_train0(:,7)];
+class_2 = [-ones(length(featarry_train1(:,3)),1) -featarry_train1(:,3) -featarry_train1(:,7)];
+Y = [class_1; class_2];
+
+%0 & 2
 class_1 = [ones(length(featarry_train0(:,3)),1) featarry_train0(:,3) featarry_train0(:,7)];
 class_2 = [-ones(length(featarry_train1(:,3)),1) -featarry_train1(:,3) -featarry_train1(:,7)];
 Y = [class_1; class_2];
@@ -98,9 +104,9 @@ X1margin_high = X1-beta(1)*m^2;
 X2margin_high = X2-beta(2)*m^2;
 plot(X1margin_low,X2margin_low,'b--')
 plot(X1margin_high,X2margin_high,'r--')
-xlabel('feature 1')
-ylabel('feature 2')
-legend('1','0','Support Vector', ...
+xlabel('Eccentricity')
+ylabel('MinorAxisLength')
+legend('Zeros','Ones','Support Vector', ...
     'Boundary Line','Upper Margin','Lower Margin')
 hold off
 
