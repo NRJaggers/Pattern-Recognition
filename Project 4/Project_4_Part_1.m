@@ -102,6 +102,27 @@ k_bha = (1/8)*mu2_mu1'*inv(cov2_cov1/2)*mu2_mu1+(1/2)*log(ln_num/ln_den);
 P_error_bound = sqrt((w1_P)*(w2_P))*exp(-k_bha);
 disp(P_error_bound);
 
+%%
+%creating histograms for data
+
+% % 1 feature
+% figure;
+% histogram(dataset(:,1));
+% figure;
+% histogram(dataset(:,4));
+
+% 2 feature
+figure;
+histogram(dataset(:,1:2));
+figure;
+histogram(dataset(:,4:5));
+
+% 3 feature
+figure;
+histogram(dataset(:,1:3));
+figure;
+histogram(dataset(:,4:6));
+
 %% Functions
 
 % Calculate parameters once in separate function if this takes too long

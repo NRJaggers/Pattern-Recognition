@@ -62,8 +62,10 @@ dataset = [
 w1_P = 0.5;
 w2_P = 0.5;
 
-w1_x = dataset(:,1:3);
-w2_x = dataset(:,4:6);
+d = 3; %dimensions
+
+w1_x = dataset(:,1:d);
+w2_x = dataset(:,4:d+3);
 
 w1_mean = mean(w1_x)';
 w2_mean = mean(w2_x)';
@@ -83,7 +85,7 @@ for i = 1:size(X, 1)
     correct = correct + ((g1_result - g2_result > 0) == y);
 end
 acc = correct / size(X, 1);
-fprintf("Accuracy: %.2f", acc);
+fprintf("Accuracy: %.2f\n", acc);
 
 %%
 % Bhattacharyya bound
@@ -100,7 +102,17 @@ k_bha = (1/8)*mu2_mu1'*inv(cov2_cov1/2)*mu2_mu1+(1/2)*log(ln_num/ln_den);
 P_error_bound = sqrt((w1_P)*(w2_P))*exp(-k_bha);
 disp(P_error_bound);
 
-%fprintf("P_error bound = %f\n",P_error_bound);
+%%
+%creating histograms for data
+
+% 
+figure;
+histogram(dataset(:,1));
+figure;
+histogram(dataset(:,4));
+
+
+
 %% Functions
 
 % Calculate parameters once in separate function if this takes too long
