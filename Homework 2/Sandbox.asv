@@ -125,19 +125,4 @@ k_bha = (1/8)*mu2_mu1'*inv(cov2_cov1/2)*mu2_mu1+(1/2)*log(ln_num/ln_den);
 P_error_bound = sqrt((w1_P)*(w2_P))*exp(-k_bha);
 disp(P_error_bound);
 
-%% Problem 5
-P1 = 0.6;
-P2 = 0.4;
-
-cov1 = 4;
-cov2 = 4;
-
-mu1 = [4;16];
-mu2 = [16;4];
-
-w1 = (1/cov1)*mu1;
-w2 = (1/cov2)*mu2;
-
-w10 = -0.5*(1/cov1)*mu1'*mu1+log(P1);
-w20 = -0.5*(1/cov2)*mu2'*mu2+log(P2);
-
+%%

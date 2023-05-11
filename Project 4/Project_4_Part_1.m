@@ -105,23 +105,35 @@ disp(P_error_bound);
 %%
 %creating histograms for data
 
-% % 1 feature
-% figure;
-% histogram(dataset(:,1));
-% figure;
-% histogram(dataset(:,4));
+% 1 feature
+figure;
+histogram(dataset(:,1));
+xlabel("w1-x1 Feature Value");
+ylabel("Frequency");
+figure;
+histogram(dataset(:,4));
+xlabel("w2-x1 Feature Value");
+ylabel("Frequency");
 
 % 2 feature
 figure;
-histogram(dataset(:,1:2));
+histogram(dataset(:,2));
+xlabel("w1-x2 Feature Value");
+ylabel("Frequency");
 figure;
-histogram(dataset(:,4:5));
+histogram(dataset(:,5));
+xlabel("w2-x2 Feature Value");
+ylabel("Frequency");
 
 % 3 feature
 figure;
-histogram(dataset(:,1:3));
+histogram(dataset(:,3));
+xlabel("w1-x3 Feature Value");
+ylabel("Frequency");
 figure;
-histogram(dataset(:,4:6));
+histogram(dataset(:,6));
+xlabel("w2-x3 Feature Value");
+ylabel("Frequency");
 
 %% Functions
 
