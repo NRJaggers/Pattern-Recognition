@@ -28,27 +28,18 @@ for feature=1:30
     hold on;
     histogram(pos_data(:,feature));
     histogram(neg_data(:,feature));
-    xlabel("Value");
-    ylabel("Frequency");
-    figtitle = sprintf("Feature %d")
-    title("Feature ",feature);
     hold off;
 end
 
 %%
 % create data set for training and test
 
-pos80 = round(length(pos_data)*0.8);
-neg80 = round(length(neg_data)*0.8);
+pos80 = round(length(pos_data));
+neg80 = round(length(neg_data));
 
-pos_Train = (pos_data(1:pos80,:));
-neg_Train = (neg_data(1:neg80,:));
+pos20 = length - pos80;
+neg20 = length - neg80;
 
-pos_Test = (pos_data(pos80:length(pos_data),:));
-neg_Test = (neg_data(neg80:length(neg_data),:));
-
-train_data = [pos_Train; neg_Train];
-test_data = [pos_Test; neg_Test];
-
+pos_Test = ()
 
 
