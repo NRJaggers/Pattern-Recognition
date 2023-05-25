@@ -51,40 +51,75 @@ train_data = [pos_Train; neg_Train];
 test_data = [pos_Test; neg_Test];
 
 %getting prior probabilities from ratios in training data
-pos_prior = pos80/(pos80+neg80);
-neg_prior = neg80/(pos80+neg80);
+% pos_prior = pos80/(pos80+neg80);
+% neg_prior = neg80/(pos80+neg80);
 
 %%
 %ones that we like: 28, 23, 21ish, 8, 3
 
 %trying to use features 8 and 28 
 %make bayesian characteristics mu and sigma
-pos_feat = [pos_Train(:,8) pos_Train(:,28)];
-neg_feat = [neg_Train(:,8) neg_Train(:,28)];
+feature_1 = 8;
+feature_2 = 28;
+pos_feat = [pos_Train(:,feature_1) pos_Train(:,feature_2)];
+neg_feat = [neg_Train(:,feature_1) neg_Train(:,feature_2)];
 
 %%
-[predict,~] = dichotomizer(pos_feat,neg_feat,pos_prior,neg_prior);
+%training and set up for dichotomizer
+[X, Y, mu_pos, cov_pos, prior_pos, mu_neg, cov_neg, prior_neg] = feat_details(pos_feat,neg_feat); 
 
+%using dichotomizer
+[predict,~] = dichotomizer(X, Y, mu_pos, cov_pos, prior_pos, mu_neg, cov_neg, prior_neg);
+
+%showing results through confusion matrix
 C = confusionmat(Y, predict);
-confusionchart(C);
+confusionchart(C,["Benign","Malignant"]);
 
 %%
-[pos_Test_samples,~] = size(pos_Test);
-[neg_Test_samples,~] = size(neg_Test);
-test_class = [ones(1,pos_Test_samples) zeros(1,neg_Test_samples)];
+%using previous training on test set
 
-%Confusion matrix for TP, TN, FP, FN
-C = confusionmat(test_class,test_class);
-confusionchart(C);
+%make test set feature vectors 
+pos_feat_test = [pos_Test(:,feature_1) pos_Test(:,feature_2)];
+neg_feat_test = [neg_Test(:,feature_1) neg_Test(:,feature_2)];
 
+%get dataset and augmented matrix from test features
+[X_test, Y_test, ~] = feat_details(pos_feat_test,neg_feat_test); 
+
+%classify test set
+[predict,~] = dichotomizer(X_test, Y_test, mu_pos, cov_pos, prior_pos, mu_neg, cov_neg, prior_neg);
+
+%showing results through confusion matrix (TP, TN, FP, FN)
+C = confusionmat(Y_test, predict);
+confusionchart(C,["Benign","Malignant"]);
+
+%%
 %ROC curve
+step = 0.05;
+prior_list = 0:step:1;
+tp_list = length(prior_list);
+fp_list = length(prior_list);
+
+for i = 1:length(prior_list)
+%gather predictions for different priors
+[predict,~] = dichotomizer(X_test, Y_test, mu_pos, cov_pos, prior_list(i), mu_neg, cov_neg, 1-prior_list(i));
+
+%collect TP and FP info for each set of priors
+C = confusionmat(Y_test, predict);
+tp_list(i) = C(2,2);
+fp_list(i) = C(1,2);
+end
+
+plot(fp_list,tp_list);
+xlabel("False Alarms (FP)");
+ylabel("Correct Detections (TP)");
 
 %%
-%general dichotomizer
-function [prediction, accuracy] = dichotomizer(w1_features, w2_features, w1_Prior, w2_Prior)
-    %first two arguments are feature matricies for the two classes
-    %last two arguments are priors for the two classes (scalars)
+%Naïve Bayes classifier
 
+
+%%
+%set up for dichotomizer
+function [dataset, classification, w1_mean, w1_cov, w1_Prior, w2_mean, w2_cov, w2_Prior] = feat_details(w1_features, w2_features)
     %calculate mean and cov to train dichotomizer
     w1_mean = mean(w1_features)';
     w2_mean = mean(w2_features)';
@@ -92,23 +127,43 @@ function [prediction, accuracy] = dichotomizer(w1_features, w2_features, w1_Prio
     w1_cov = cov(w1_features);
     w2_cov = cov(w2_features);
 
-    %create input matrix, augmented matrix, and class prediction matrix
-    X = [w1_features; w2_features];
-    Y = [ones(size(w1_features, 1), 1); zeros(size(w2_features, 1), 1)];
-    prediction = [zeros(size(Y, 1), 1)];
+    %priors section
+    w1_samples = size(w1_features,1);
+    w2_samples = size(w2_features,1);
+    w1_Prior = w1_samples/(w1_samples+w2_samples);
+    w2_Prior = w2_samples/(w1_samples+w2_samples);
+
+    %create input matrix and augmented matrix
+    dataset = [w1_features; w2_features]; %input
+    classification = [ones(size(w1_features, 1), 1); zeros(size(w2_features, 1), 1)]; %augmented (Y)
+end
+
+%general dichotomizer
+function [prediction, accuracy] = dichotomizer(dataset, classification, w1_mean, w1_cov, w1_Prior, w2_mean, w2_cov, w2_Prior)
+    %dataset - input data to be classified
+    %classification - true classification of samples
+    %w1_mean  - mean for class 1 
+    %w1_cov   - covariance for class 2
+    %w1_Prior - prior for class 1
+    %w2_mean  - mean for class 2
+    %w2_cov   - covariance for class 2
+    %w2_Prior - prior for class 2
+
+    %create class prediction matrix
+    prediction = [zeros(size(classification, 1), 1)];
 
     %initialize correct counter
     correct = 0;
     
-    for i = 1:size(X, 1)
-        x = X(i,:)';
-        y = Y(i);
+    for i = 1:size(dataset, 1)
+        x = dataset(i,:)';
+        y = classification(i);
         g1_result = g(x, w1_mean, w1_cov, w1_Prior);
         g2_result = g(x, w2_mean, w2_cov, w2_Prior);
         prediction(i) = g1_result - g2_result > 0;
         correct = correct + (prediction(i) == y);
     end
-    accuracy = correct / size(X, 1);
+    accuracy = correct / size(dataset, 1);
     fprintf("Accuracy: %.2f\n", accuracy);
 end
 
