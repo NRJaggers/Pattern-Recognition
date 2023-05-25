@@ -6,7 +6,7 @@
 % Group 4: Nathan Jaggers, Nicholas Brunet, Jordan Rubio Perlas
 %
 % Description: See coresponding document <Can add description later>
-%% Part <#>
+%% Part 2
 close all;
 clear;
 clc;
@@ -50,27 +50,28 @@ neg_Test = (neg_data(neg80:length(neg_data),:));
 train_data = [pos_Train; neg_Train];
 test_data = [pos_Test; neg_Test];
 
+%getting prior probabilities from ratios in training data
+pos_prior = pos80/(pos80+neg80);
+neg_prior = neg80/(pos80+neg80);
+
+%%
+%ones that we like: 28, 23, 21ish, 8, 3
+
+%trying to use features 8 and 28 
+%make bayesian characteristics mu and sigma
+pos_feat = [pos_Train(:,8) pos_Train(:,28)];
+neg_feat = [neg_Train(:,8) neg_Train(:,28)];
+
+%%
+[predict,~] = dichotomizer(pos_feat,neg_feat,pos_prior,neg_prior);
+
+C = confusionmat(Y, predict);
+confusionchart(C);
+
+%%
 [pos_Test_samples,~] = size(pos_Test);
 [neg_Test_samples,~] = size(neg_Test);
 test_class = [ones(1,pos_Test_samples) zeros(1,neg_Test_samples)];
-
-%%
-
-%%
-correct = 0;
-Y = test_class';
-X = test_data;
-for i = 1:size(X, 1)
-    x = X(i,:)';
-    y = Y(i);
-    g1_result = g(x, w1_mean, w1_cov, w1_P);
-    g2_result = g(x, w2_mean, w2_cov, w2_P);
-    correct = correct + ((g1_result - g2_result > 0) == y);
-end
-acc = correct / size(X, 1);
-fprintf("Accuracy: %.2f\n", acc);
-
-%%
 
 %Confusion matrix for TP, TN, FP, FN
 C = confusionmat(test_class,test_class);
@@ -79,6 +80,38 @@ confusionchart(C);
 %ROC curve
 
 %%
+%general dichotomizer
+function [prediction, accuracy] = dichotomizer(w1_features, w2_features, w1_Prior, w2_Prior)
+    %first two arguments are feature matricies for the two classes
+    %last two arguments are priors for the two classes (scalars)
+
+    %calculate mean and cov to train dichotomizer
+    w1_mean = mean(w1_features)';
+    w2_mean = mean(w2_features)';
+
+    w1_cov = cov(w1_features);
+    w2_cov = cov(w2_features);
+
+    %create input matrix, augmented matrix, and class prediction matrix
+    X = [w1_features; w2_features];
+    Y = [ones(size(w1_features, 1), 1); zeros(size(w2_features, 1), 1)];
+    prediction = [zeros(size(Y, 1), 1)];
+
+    %initialize correct counter
+    correct = 0;
+    
+    for i = 1:size(X, 1)
+        x = X(i,:)';
+        y = Y(i);
+        g1_result = g(x, w1_mean, w1_cov, w1_Prior);
+        g2_result = g(x, w2_mean, w2_cov, w2_Prior);
+        prediction(i) = g1_result - g2_result > 0;
+        correct = correct + (prediction(i) == y);
+    end
+    accuracy = correct / size(X, 1);
+    fprintf("Accuracy: %.2f\n", accuracy);
+end
+
 % Calculate parameters once in separate function if this takes too long
 function result = g(x, mean, cov, P)
     cov_i = inv(cov);
