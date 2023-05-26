@@ -22,7 +22,7 @@ neg_data = wdbc.data((wdbc.textdata(:,2))=="B",:);
 %%
 %create histograms to compare positive and negative data to find good
 %discriminant features
-
+feature_overlap = size(neg_data,2);
 for feature=1:30
     figure;
     hold on;
@@ -30,10 +30,21 @@ for feature=1:30
     histogram(neg_data(:,feature));
     xlabel("Value");
     ylabel("Frequency");
-    figtitle = sprintf("Feature %d")
+    figtitle = sprintf("Feature %d");
     title("Feature ",feature);
+    feature_overlap(feature) = hist_overlap(pos_data(:,feature), neg_data(:,feature));
     hold off;
 end
+
+%%
+%use overlap to  find best features
+best_features = zeros(5,2);
+min_Fill = max(feature_overlap);
+for i=1:size(best_features,1);
+[best_features(i,1), best_features(i,2)] = min(feature_overlap);
+feature_overlap(best_features(i,2)) = min_Fill;
+end
+fprintf("Minimums at %d: %f",best_features(i,2),best_features(i,1));
 
 %%
 % create data set for training and test
@@ -241,4 +252,23 @@ function [prediction, accuracy] = naive_bayes(dataset, classification, w1_mean, 
     end
     accuracy = correct / size(dataset, 1);
     fprintf("Accuracy: %.2f\n", accuracy);
+end
+
+%% Compare Histograms 
+% edited from Dylan Baxter's and Nicholas Brunet's code
+function [overlap] = hist_overlap(feature1, feature2)
+    numBins = 50;
+    % Extract histogram Information
+    max_val = max([feature1;feature2], [], "all");
+    min_val = min([feature1;feature2], [], "all");
+    bins = linspace(min_val, max_val, numBins+1);
+    hist1 = histcounts(feature1, bins);
+    hist2 = histcounts(feature2, bins);
+    
+    % Iterate over histograms and calculate overlap
+    overlap = 0;
+    for m = 1:length(hist1)
+        overlap = overlap + min(hist1(m), hist2(m));
+    end
+    overlap = overlap / sum(hist1, "all");
 end

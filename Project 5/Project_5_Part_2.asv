@@ -22,7 +22,7 @@ neg_data = wdbc.data((wdbc.textdata(:,2))=="B",:);
 %%
 %create histograms to compare positive and negative data to find good
 %discriminant features
-
+feature_overlap = size(neg_data,2);
 for feature=1:30
     figure;
     hold on;
@@ -30,9 +30,19 @@ for feature=1:30
     histogram(neg_data(:,feature));
     xlabel("Value");
     ylabel("Frequency");
-    figtitle = sprintf("Feature %d")
+    figtitle = sprintf("Feature %d");
     title("Feature ",feature);
+    feature_overlap(feature) = hist_overlap(pos_data(:,feature), neg_data(:,feature));
     hold off;
+end
+
+%%
+%use overlap to  find best features
+best_features = zeros(5,2);
+for i=1:size(best_features,1);
+
+[value, index] = min(feature_overlap);
+fprintf("min at %d: %f\n",index, value);
 end
 
 %%
@@ -105,8 +115,8 @@ for i = 1:length(prior_list)
 
 %collect TP and FP info for each set of priors
 C = confusionmat(Y_test, predict);
-tp_list(i) = C(2,2);
-fp_list(i) = C(1,2);
+tp_list(i) = C(2,2)/sum(C(:));
+fp_list(i) = C(1,2)/sum(C(:));
 end
 
 plot(fp_list,tp_list);
@@ -115,18 +125,32 @@ ylabel("Correct Detections (TP)");
 
 %%
 %Naïve Bayes classifier
-%need to pass in naive cov (2x1 not 2x2)
-%can use feat detail function (I think) but you need to split up the
-%features into column vectors (not matricies like they are)
 cov_pos_naive = [cov(pos_feat(:,1));cov(pos_feat(:,2))];
 cov_neg_naive = [cov(neg_feat(:,1));cov(neg_feat(:,2))];
 
 [predict,~] = naive_bayes(X_test, Y_test, mu_pos, cov_pos_naive, prior_pos, mu_neg, cov_neg_naive, prior_neg);
 
-%questions
-% priors for naive classifier? also which example to follow? 
-% also priors for above need to be from training set always right? dont
-% switch to test when doing test?
+%%
+%ROC curve
+step = 0.05;
+prior_list = 0:step:1;
+tp_list = length(prior_list);
+fp_list = length(prior_list);
+
+for i = 1:length(prior_list)
+%gather predictions for different priors
+[predict,~] = naive_bayes(X_test, Y_test, mu_pos, cov_pos_naive, prior_list(i), mu_neg, cov_neg_naive, 1-prior_list(i));
+
+%collect TP and FP info for each set of priors
+C = confusionmat(Y_test, predict);
+tp_list(i) = C(2,2)/sum(C(:));
+fp_list(i) = C(1,2)/sum(C(:));
+end
+
+plot(fp_list,tp_list);
+xlabel("False Alarms (FP)");
+ylabel("Correct Detections (TP)");
+
 %%
 %set up for dichotomizer
 function [dataset, classification, w1_mean, w1_cov, w1_Prior, w2_mean, w2_cov, w2_Prior] = feat_details(w1_features, w2_features)
@@ -191,10 +215,10 @@ function [prediction, accuracy] = naive_bayes(dataset, classification, w1_mean, 
     %dataset - input data to be classified
     %classification - true classification of samples
     %w1_mean  - mean for class 1 
-    %w1_cov   - covariance for class 2
+    %w1_cov   - naive covariance for class 2 (one variance for each feature; column vector)
     %w1_Prior - prior for class 1
     %w2_mean  - mean for class 2
-    %w2_cov   - covariance for class 2
+    %w2_cov   - covariance for class 2 (one variance for each feature; column vector)
     %w2_Prior - prior for class 2
 
     %create class prediction matrix
@@ -212,15 +236,38 @@ function [prediction, accuracy] = naive_bayes(dataset, classification, w1_mean, 
         y = classification(i);
         %multiplication pdfs of of first class
         pdf_per_class = (1./(sqrt(2.*pi().*w1_cov))).*exp(-0.5.*((x-w1_mean).^2)./w1_cov);
-        pdf_pi = prod(pdf)
+        pdf_pi = prod(pdf_per_class);
         %discriminant of first class
+        g1_result = log(pdf_pi)*w1_Prior;
+        
         %multiplication pdfs of of second class
+        pdf_per_class = (1./(sqrt(2.*pi().*w2_cov))).*exp(-0.5.*((x-w2_mean).^2)./w2_cov);
+        pdf_pi = prod(pdf_per_class);
         %discriminant of second class
-%         g1_result = g(x, w1_mean, w1_cov, w1_Prior);
-%         g2_result = g(x, w2_mean, w2_cov, w2_Prior);
+        g2_result = log(pdf_pi)*w2_Prior;
+
         prediction(i) = g1_result - g2_result > 0;
         correct = correct + (prediction(i) == y);
     end
     accuracy = correct / size(dataset, 1);
     fprintf("Accuracy: %.2f\n", accuracy);
+end
+
+%% Compare Histograms 
+% edited from Dylan Baxter's and Nicholas Brunet's code
+function [overlap] = hist_overlap(feature1, feature2)
+    numBins = 50;
+    % Extract histogram Information
+    max_val = max([feature1;feature2], [], "all");
+    min_val = min([feature1;feature2], [], "all");
+    bins = linspace(min_val, max_val, numBins+1);
+    hist1 = histcounts(feature1, bins);
+    hist2 = histcounts(feature2, bins);
+    
+    % Iterate over histograms and calculate overlap
+    overlap = 0;
+    for m = 1:length(hist1)
+        overlap = overlap + min(hist1(m), hist2(m));
+    end
+    overlap = overlap / sum(hist1, "all");
 end
