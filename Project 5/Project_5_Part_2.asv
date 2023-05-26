@@ -30,20 +30,23 @@ for feature=1:30
     histogram(neg_data(:,feature));
     xlabel("Value");
     ylabel("Frequency");
-    figtitle = sprintf("Feature %d");
+    %figtitle = sprintf("Feature %d");
     title("Feature ",feature);
-    feature_overlap(feature) = hist_overlap(pos_data(:,feature), neg_data(:,feature));
     hold off;
+    feature_overlap(feature) = hist_overlap(pos_data(:,feature), neg_data(:,feature));
+
 end
 
 %%
 %use overlap to  find best features
 best_features = zeros(5,2);
+min_Fill = max(feature_overlap);
+tempMat = feature_overlap
 for i=1:size(best_features,1);
-
-[value, index] = min(feature_overlap);
-fprintf("min at %d: %f\n",index, value);
+[best_features(i,1), best_features(i,2)] = min(tempMat);
+tempMat(best_features(i,2)) = min_Fill;
 end
+fprintf("Minimums at %f: %f\n",best_features(:,2),best_features(:,1));
 
 %%
 % create data set for training and test
