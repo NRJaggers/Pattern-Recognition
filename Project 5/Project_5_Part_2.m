@@ -105,8 +105,8 @@ for i = 1:length(prior_list)
 
 %collect TP and FP info for each set of priors
 C = confusionmat(Y_test, predict);
-tp_list(i) = C(2,2);
-fp_list(i) = C(1,2);
+tp_list(i) = C(2,2)/sum(C(:));
+fp_list(i) = C(1,2)/sum(C(:));
 end
 
 plot(fp_list,tp_list);
@@ -115,7 +115,31 @@ ylabel("Correct Detections (TP)");
 
 %%
 %Naïve Bayes classifier
+cov_pos_naive = [cov(pos_feat(:,1));cov(pos_feat(:,2))];
+cov_neg_naive = [cov(neg_feat(:,1));cov(neg_feat(:,2))];
 
+[predict,~] = naive_bayes(X_test, Y_test, mu_pos, cov_pos_naive, prior_pos, mu_neg, cov_neg_naive, prior_neg);
+
+%%
+%ROC curve
+step = 0.05;
+prior_list = 0:step:1;
+tp_list = length(prior_list);
+fp_list = length(prior_list);
+
+for i = 1:length(prior_list)
+%gather predictions for different priors
+[predict,~] = naive_bayes(X_test, Y_test, mu_pos, cov_pos_naive, prior_list(i), mu_neg, cov_neg_naive, 1-prior_list(i));
+
+%collect TP and FP info for each set of priors
+C = confusionmat(Y_test, predict);
+tp_list(i) = C(2,2)/sum(C(:));
+fp_list(i) = C(1,2)/sum(C(:));
+end
+
+plot(fp_list,tp_list);
+xlabel("False Alarms (FP)");
+ylabel("Correct Detections (TP)");
 
 %%
 %set up for dichotomizer
@@ -174,4 +198,47 @@ function result = g(x, mean, cov, P)
     w = cov_i * mean;
     w0 = -0.5 * (mean' * cov_i * mean) - 0.5 * log(det(cov)) + log(P);
     result = x'*W*x + w'*x + w0;
+end
+
+%Naïve Bayes classifier
+function [prediction, accuracy] = naive_bayes(dataset, classification, w1_mean, w1_cov, w1_Prior, w2_mean, w2_cov, w2_Prior)
+    %dataset - input data to be classified
+    %classification - true classification of samples
+    %w1_mean  - mean for class 1 
+    %w1_cov   - naive covariance for class 2 (one variance for each feature; column vector)
+    %w1_Prior - prior for class 1
+    %w2_mean  - mean for class 2
+    %w2_cov   - covariance for class 2 (one variance for each feature; column vector)
+    %w2_Prior - prior for class 2
+
+    %create class prediction matrix
+    prediction = [zeros(size(classification, 1), 1)];
+
+    %initialize correct counter
+    correct = 0;
+    
+    %**************
+    % Need to make changes so that mult individual pdfs
+    %
+
+    for i = 1:size(dataset, 1)
+        x = dataset(i,:)';
+        y = classification(i);
+        %multiplication pdfs of of first class
+        pdf_per_class = (1./(sqrt(2.*pi().*w1_cov))).*exp(-0.5.*((x-w1_mean).^2)./w1_cov);
+        pdf_pi = prod(pdf_per_class);
+        %discriminant of first class
+        g1_result = log(pdf_pi)*w1_Prior;
+        
+        %multiplication pdfs of of second class
+        pdf_per_class = (1./(sqrt(2.*pi().*w2_cov))).*exp(-0.5.*((x-w2_mean).^2)./w2_cov);
+        pdf_pi = prod(pdf_per_class);
+        %discriminant of second class
+        g2_result = log(pdf_pi)*w2_Prior;
+
+        prediction(i) = g1_result - g2_result > 0;
+        correct = correct + (prediction(i) == y);
+    end
+    accuracy = correct / size(dataset, 1);
+    fprintf("Accuracy: %.2f\n", accuracy);
 end
