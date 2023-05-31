@@ -41,7 +41,7 @@ end
 %use overlap to  find best features
 best_features = zeros(5,2);
 min_Fill = max(feature_overlap);
-tempMat = feature_overlap
+tempMat = feature_overlap;
 for i=1:size(best_features,1);
 [best_features(i,1), best_features(i,2)] = min(tempMat);
 tempMat(best_features(i,2)) = min_Fill;
@@ -72,10 +72,14 @@ test_data = [pos_Test; neg_Test];
 
 %trying to use features 8 and 28 
 %make bayesian characteristics mu and sigma
-feature_1 = 8;
+feature_1 = 23;
 feature_2 = 28;
-pos_feat = [pos_Train(:,feature_1) pos_Train(:,feature_2)];
-neg_feat = [neg_Train(:,feature_1) neg_Train(:,feature_2)];
+feature_3 = 8;
+% pos_feat = [pos_Train(:,feature_1) pos_Train(:,feature_2)];
+% neg_feat = [neg_Train(:,feature_1) neg_Train(:,feature_2)];
+
+pos_feat = [pos_Train(:,feature_1) pos_Train(:,feature_2) pos_Train(:,feature_3)];
+neg_feat = [neg_Train(:,feature_1) neg_Train(:,feature_2) neg_Train(:,feature_3)];
 
 %%
 %training and set up for dichotomizer
@@ -92,8 +96,11 @@ confusionchart(C,["Benign","Malignant"]);
 %using previous training on test set
 
 %make test set feature vectors 
-pos_feat_test = [pos_Test(:,feature_1) pos_Test(:,feature_2)];
-neg_feat_test = [neg_Test(:,feature_1) neg_Test(:,feature_2)];
+% pos_feat_test = [pos_Test(:,feature_1) pos_Test(:,feature_2)];
+% neg_feat_test = [neg_Test(:,feature_1) neg_Test(:,feature_2)];
+
+pos_feat_test = [pos_Test(:,feature_1) pos_Test(:,feature_2) pos_Test(:,feature_3)];
+neg_feat_test = [neg_Test(:,feature_1) neg_Test(:,feature_2) neg_Test(:,feature_3)];
 
 %get dataset and augmented matrix from test features
 [X_test, Y_test, ~] = feat_details(pos_feat_test,neg_feat_test); 
@@ -118,8 +125,8 @@ for i = 1:length(prior_list)
 
 %collect TP and FP info for each set of priors
 C = confusionmat(Y_test, predict);
-tp_list(i) = C(2,2)/sum(C(:));
-fp_list(i) = C(1,2)/sum(C(:));
+tp_list(i) = C(2,2)/(C(2, 2)+ C(2, 1));
+fp_list(i) = C(1,2)/(C(1, 2)+ C(1, 1));
 end
 
 plot(fp_list,tp_list);
@@ -128,10 +135,17 @@ ylabel("Correct Detections (TP)");
 
 %%
 %Naïve Bayes classifier
-cov_pos_naive = [cov(pos_feat(:,1));cov(pos_feat(:,2))];
-cov_neg_naive = [cov(neg_feat(:,1));cov(neg_feat(:,2))];
+% cov_pos_naive = [cov(pos_feat(:,1));cov(pos_feat(:,2))];
+% cov_neg_naive = [cov(neg_feat(:,1));cov(neg_feat(:,2))];
+
+cov_pos_naive = [cov(pos_feat(:,1));cov(pos_feat(:,2));cov(pos_feat(:,3))];
+cov_neg_naive = [cov(neg_feat(:,1));cov(neg_feat(:,2));cov(neg_feat(:,3))];
 
 [predict,~] = naive_bayes(X_test, Y_test, mu_pos, cov_pos_naive, prior_pos, mu_neg, cov_neg_naive, prior_neg);
+
+%showing results through confusion matrix (TP, TN, FP, FN)
+C = confusionmat(Y_test, predict);
+confusionchart(C,["Benign","Malignant"]);
 
 %%
 %ROC curve
@@ -146,8 +160,8 @@ for i = 1:length(prior_list)
 
 %collect TP and FP info for each set of priors
 C = confusionmat(Y_test, predict);
-tp_list(i) = C(2,2)/sum(C(:));
-fp_list(i) = C(1,2)/sum(C(:));
+tp_list(i) = C(2,2)/(C(2, 2)+ C(2, 1));
+fp_list(i) = C(1,2)/(C(1, 2)+ C(1, 1));
 end
 
 plot(fp_list,tp_list);
