@@ -96,13 +96,7 @@ confusionchart(C,["Setosa", "Versicolor", "Virginica",]);
 % h.XLabel = 'Actual';
 % h.YLabel = 'Predicted';
 
-%%
-C = naive_loo_bayes(Y, setosa_X, w1_P, versicolor_X, w2_P, virginica_X, w3_P);
-%confusionchart(C);
-confusionchart(C,["Setosa", "Versicolor", "Virginica",]);
 
-
-%%
 function conf_mat = loo_bayes(Y, setosa_X, w1_P, versicolor_X, w2_P, virginica_X, w3_P)
 
     correct = 0;
@@ -193,17 +187,20 @@ function conf_mat = naive_loo_bayes(Y, setosa_X, w1_P, versicolor_X, w2_P, virgi
         w2_mean = mean(versicolor_X_train)';
         w3_mean = mean(virginica_X_train)';
         
-        w1_cov = zeros(size(setosa_X_train,2),1);
-        w2_cov = zeros(size(versicolor_X_train,2),1);
-        w3_cov = zeros(size(virginica_X_train,2),1);
-
+        w1_cov(1,i) = zeros(,)
+        w2_cov(1,i) = cov(versicolor_X_train(:,i));
+        w3_cov(1,i) = cov(virginica_X_train(:,i));
         for cols = 1:size(setosa_X_train,2)
-            w1_cov(cols,1) = cov(setosa_X_train(:,cols));
-            w2_cov(cols,1) = cov(versicolor_X_train(:,cols));
-            w3_cov(cols,1) = cov(virginica_X_train(:,cols));
+            w1_cov(1,i) = cov(setosa_X_train(:,i));
+            w2_cov(1,i) = cov(versicolor_X_train(:,i));
+            w3_cov(1,i) = cov(virginica_X_train(:,i));
         end
         
         % Test
+        
+        g1 = g(x, w1_mean, w1_cov, w1_P);
+        g2 = g(x, w2_mean, w2_cov, w2_P);
+        g3 = g(x, w3_mean, w3_cov, w3_P);
 
         %multiplication pdfs of of first class
         pdf_per_class = (1./(sqrt(2.*pi().*w1_cov))).*exp(-0.5.*((x-w1_mean).^2)./w1_cov);
@@ -235,7 +232,9 @@ function conf_mat = naive_loo_bayes(Y, setosa_X, w1_P, versicolor_X, w2_P, virgi
         if(result == y)
             correct = correct + 1;
         end
-  
+
+
+    
     end
 
     fprintf("Accuracy: %.3f\n", correct / 150);

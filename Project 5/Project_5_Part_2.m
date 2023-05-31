@@ -243,10 +243,6 @@ function [prediction, accuracy] = naive_bayes(dataset, classification, w1_mean, 
 
     %initialize correct counter
     correct = 0;
-    
-    %**************
-    % Need to make changes so that mult individual pdfs
-    %
 
     for i = 1:size(dataset, 1)
         x = dataset(i,:)';
