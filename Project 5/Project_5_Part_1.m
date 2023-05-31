@@ -31,36 +31,52 @@ versicolor_Y = ones(50, 1) * 2;
 virginica_Y = ones(50, 1) * 3;
 Y = [setosa_Y; versicolor_Y; virginica_Y];
 
-% % BAD
-% hold on
-% histogram(setosa_X(:,1), 'FaceColor', 'r', 'BinWidth', .2);
-% histogram(versicolor_X(:,1), 'FaceColor', 'g', 'BinWidth', .2);
-% histogram(virginica_X(:,1), 'FaceColor', 'b', 'BinWidth', .2);
-% hold off
-% 
-% % BAD
-% figure;
-% hold on
-% histogram(setosa_X(:,2), 'FaceColor', 'r', 'BinWidth', .2);
-% histogram(versicolor_X(:,2), 'FaceColor', 'g', 'BinWidth', .2);
-% histogram(virginica_X(:,2), 'FaceColor', 'b', 'BinWidth', .2);
-% hold off
-% 
-% % GOOD
-% figure;
-% hold on
-% histogram(setosa_X(:,3), 'FaceColor', 'r', 'BinWidth', .2);
-% histogram(versicolor_X(:,3), 'FaceColor', 'g', 'BinWidth', .2);
-% histogram(virginica_X(:,3), 'FaceColor', 'b', 'BinWidth', .2);
-% hold off
-% 
-% % GOOD
-% figure;
-% hold on
-% histogram(setosa_X(:,4), 'FaceColor', 'r', 'BinWidth', .2);
-% histogram(versicolor_X(:,4), 'FaceColor', 'g', 'BinWidth', .2);
-% histogram(virginica_X(:,4), 'FaceColor', 'b', 'BinWidth', .2);
-% hold off
+% BAD
+hold on
+histogram(setosa_X(:,1), 'FaceColor', 'r', 'BinWidth', .2);
+histogram(versicolor_X(:,1), 'FaceColor', 'g', 'BinWidth', .2);
+histogram(virginica_X(:,1), 'FaceColor', 'b', 'BinWidth', .2);
+xlabel("Value");
+ylabel("Frequency");
+title("Sepal Length");
+legend("Setosa", "Versicolor", "Virginica");
+hold off
+
+% BAD
+figure;
+hold on
+histogram(setosa_X(:,2), 'FaceColor', 'r', 'BinWidth', .2);
+histogram(versicolor_X(:,2), 'FaceColor', 'g', 'BinWidth', .2);
+histogram(virginica_X(:,2), 'FaceColor', 'b', 'BinWidth', .2);
+xlabel("Value");
+ylabel("Frequency");
+title("Sepal Width");
+legend("Setosa", "Versicolor", "Virginica");
+hold off
+
+% GOOD
+figure;
+hold on
+histogram(setosa_X(:,3), 'FaceColor', 'r', 'BinWidth', .2);
+histogram(versicolor_X(:,3), 'FaceColor', 'g', 'BinWidth', .2);
+histogram(virginica_X(:,3), 'FaceColor', 'b', 'BinWidth', .2);
+xlabel("Value");
+ylabel("Frequency");
+title("Petal Length");
+legend("Setosa", "Versicolor", "Virginica");
+hold off
+
+% GOOD
+figure;
+hold on
+histogram(setosa_X(:,4), 'FaceColor', 'r', 'BinWidth', .2);
+histogram(versicolor_X(:,4), 'FaceColor', 'g', 'BinWidth', .2);
+histogram(virginica_X(:,4), 'FaceColor', 'b', 'BinWidth', .2);
+xlabel("Value");
+ylabel("Frequency");
+title("Petal Width");
+legend("Setosa", "Versicolor", "Virginica");
+hold off
 
 % Prior probabilities
 w1_P = size(setosa_X,1)/size(meas,1); % 1/3 % each have 50 samples
