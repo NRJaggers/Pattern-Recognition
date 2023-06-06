@@ -1,12 +1,12 @@
-%% Project <Template>
+%% Project 6
 %
 % EE 516 - Pattern Recognition
 % Spring 2023
 %
-% Group <#>: Nathan Jaggers, <Other Members>
+% Group 4: Nathan Jaggers, Colt Whitley, Kai Ponting
 %
 % Description: See coresponding document <Can add description later>
-%% Part <#>
+%% Part 2 - Using Pixel Data
 close all;
 clear;
 clc;
