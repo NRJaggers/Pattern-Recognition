@@ -34,3 +34,5 @@ syms S M L ;
 seq = [M S L];
 
 pStates = hmmdecode(seq,trans,emis,'Symbols',{'S','M','L'});
+
+%%
