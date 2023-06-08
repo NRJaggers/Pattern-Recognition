@@ -24,13 +24,18 @@ h=0.2*0.7*0.1*0.6*0.6*0.6
 prob=a+b+c+d+e+f+g+h
 %%
 
-trans = [0.7,0.03;
-         0.10,0.90];
-emis = [1/6 1/6 1/6;
-   1/10 1/10 1/2];
-syms s m l ;
-seq = [s m l m m];
-states = {s m l};
-%[seq,states] = hmmgenerate(10,trans,emis);
-% pStates = hmmdecode(seq,trans,emis,states);
-pStates = hmmdecode(seq,trans,emis,'Symbols',{'s','m','l'});
+trans = [0.7 0.3;
+         0.4 0.6];
+
+emis = [0.1 0.4 0.5;
+        0.7 0.2 0.1];
+
+sequence = [2 1 3];
+
+%%
+% find rmax to determine max possible combinations of hidden states for
+% observed sequence
+hidden_states = size(trans,1);
+T = length(sequence);
+rmax = hidden_states^T;
+

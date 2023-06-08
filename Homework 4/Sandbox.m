@@ -30,9 +30,12 @@ trans = [0.7 0.3;
 emis = [0.1 0.4 0.5;
         0.7 0.2 0.1];
 
-syms S M L ;
-seq = [M S L];
-
-pStates = hmmdecode(seq,trans,emis,'Symbols',{'S','M','L'});
+sequence = [2 1 3];
 
 %%
+% find rmax to determine max possible combinations of hidden states for
+% observed sequence
+hidden_states = size(trans,1);
+T = length(sequence);
+rmax = hidden_states^T;
+
