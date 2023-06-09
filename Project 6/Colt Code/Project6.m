@@ -379,153 +379,29 @@ Error01 = [1.82 1.31 1.26 1.16;
            1.82 1.31 1.26 1.16];
 
 Labels = categorical({'City Block','Euclidian'});
-b = bar(Labels,Error01);
-ylabel("Error (%)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
-saveas(gcf,"TF_Error_01.png");
+barGraph(Error01,Labels,"Error (%)");
 %%
 Error02 = [9.27 7.27 6.78 6.88; 
            9.37 7.13 6.98 6.78];
 
 Labels = categorical({'City Block','Euclidian'});
-b = bar(Labels,Error02);
-ylabel("Error (%)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
+barGraph(Error02,Labels,"Error (%)");
 
 %% Pixel Features Error
 Error01 = [0.10 0.15 0.15 0.15;
            0.10 0.15 0.15 0.15];
 
 Labels = categorical({'City Block','Euclidian'});
-b = bar(Labels,Error01);
-ylabel("Error (%)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
+barGraph(Error01,Labels,"Error (%)");
 
 %%
 Error02 = [0.90 0.85 0.85 1.00;
            0.90 0.85 0.85 1.00];
 
 Labels = categorical({'City Block','Euclidian'});
-b = bar(Labels,Error02);
-ylabel("Error (%)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
+barGraph(Error02,Labels,"Error (%)");
 
 %% Two Features Time
-% 01 per sample
-Time01 = [27.06 27.00 27.59 27.50;
-           27.33 27.47 27.18 27.64];
-Time01=round(Time01,1);
-
-Labels = categorical({'City Block','Euclidian'});
-b = bar(Labels,Time01);
-ylabel("Time (ms)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
-
-%%
-% 01 Total
-Time01 = [53625 53516 53677 54507;
-          54169 54437 53867 54781];
-Time01=round(Time01./1000,1);
-
-Labels = categorical({'City Block','Euclidian'});
-b = bar(Labels,Time01);
-ylabel("Time (s)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
-%%
-% 02 per sample
-Time02 = [25.49 25.17 25.44 25.82;
-          25.44 25.33 25.44 25.83];
-Time02=round(Time02,1);
-
-Labels = categorical({'City Block','Euclidian'});
-b = bar(Labels,Time02);
-ylabel("Time (ms)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
-
-%%
-% 02 Total
-Time02 = [51155 50517 51065 51829;
-          51059 50846 51061 51845];
-Time02=round(Time02./1000,1);
-
-Labels = categorical({'City Block','Euclidian'});
-b = bar(Labels,Time02);
-ylabel("Time (s)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
-
-%%
 % 01 & 02 per sample
 Time01 = [27.06 27.00 27.59 27.50;
            27.33 27.47 27.18 27.64];
@@ -536,18 +412,7 @@ Time02 = [25.49 25.17 25.44 25.82;
 Time02=round(Time02,1);
 
 Labels = categorical({'01 City Block','01 Euclidian','02 City Block','02 Euclidian'});
-b = bar(Labels,[Time01;Time02]);
-ylabel("Time (ms)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
+barGraph([Time01;Time02],Labels,"Time (ms)");
 %%
 % 01 & 02 Total
 Time01 = [53625 53516 53677 54507;
@@ -559,97 +424,8 @@ Time02 = [51155 50517 51065 51829;
 Time02=round(Time02./1000,1);
 
 Labels = categorical({'01 City Block','01 Euclidian','02 City Block','02 Euclidian'});
-b = bar(Labels,[Time01;Time02]);
-ylabel("Time (s)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
+barGraph([Time01;Time02],Labels,"Time (s)");
 %% Pixel Features Time
-% 01 per sample
-Time01 = [139.6 137.8 132.7 131.9;
-          129.6 127.7 128.8 129.1];
-Time01=round(Time01,1);
-
-Labels = categorical({'City Block','Euclidian'});
-b = bar(Labels,Time01);
-ylabel("Time (ms)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
-
-%%
-% 01 Total
-Time01 = [276743 273491 263203 261453;
-          256952 253322 255192 255928];
-Time01=round(Time01./1000,1);
-
-Labels = categorical({'City Block','Euclidian'});
-b = bar(Labels,Time01);
-ylabel("Time (s)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
-%%
-% 02 per sample
-Time02 = [122.0 124.0 124.2 124.7;
-          118.7 120.6 123.4 121.4];
-Time02=round(Time02,1);
-
-Labels = categorical({'City Block','Euclidian'});
-b = bar(Labels,Time02);
-ylabel("Time (ms)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
-
-%%
-% 02 Total
-Time02 = [244922 248798 249247 250264;
-          238301 242101 247680 243651];
-Time02=round(Time02./1000,1);
-
-Labels = categorical({'City Block','Euclidian'});
-b = bar(Labels,Time02);
-ylabel("Time (s)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
-%%
 % 01 & 02 per sample
 Time01 = [139.6 137.8 132.7 131.9;
           129.6 127.7 128.8 129.1];
@@ -660,18 +436,7 @@ Time02 = [122.0 124.0 124.2 124.7;
 Time02=round(Time02,1);
 
 Labels = categorical({'01 City Block','01 Euclidian','02 City Block','02 Euclidian'});
-b = bar(Labels,[Time01;Time02]);
-ylabel("Time (ms)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
+barGraph([Time01;Time02],Labels,"Time (ms)");
 %%
 % 01 & 02 Total
 Time01 = [276743 273491 263203 261453;
@@ -683,17 +448,4 @@ Time02 = [244922 248798 249247 250264;
 Time02=round(Time02./1000,1);
 
 Labels = categorical({'01 City Block','01 Euclidian','02 City Block','02 Euclidian'});
-b = bar(Labels,[Time01;Time02]);
-ylabel("Time (s)");
-legend("1","3","5","11");
-
-% data at top of bars
-for i = 1:length(b);
-    xtips1 = b(i).XEndPoints;
-    ytips1 = b(i).YEndPoints;
-    labels1 = string(b(i).YData);
-    text(xtips1,ytips1,labels1,'HorizontalAlignment','center',...
-        'VerticalAlignment','bottom')
-end
-%%
 barGraph([Time01;Time02],Labels,"Time (s)");
