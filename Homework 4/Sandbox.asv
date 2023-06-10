@@ -55,9 +55,7 @@ for t = [1 2 3]
                 temp(i) = alpha(t-1,i)*a(i,j);
             end
         end
-        if(t~=1)
-            alpha(t,j) = temp(1)+temp(2)*b(j,k);
-        end
+        alpha(t,j) = temp(1)+temp(2)*b(j,k);
     end
 end
 
